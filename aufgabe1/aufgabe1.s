@@ -129,7 +129,7 @@ parse_email:
     la $a0, email_buffer # haystack
     move $a1, $s0 # len of haystack
     la $a2, header_subject # needle
-    la $a3, header_subject_length # len of needle
+    lw $a3, header_subject_length # len of needle
     jal find_str
 
     move $s1, $v0 # position of subject
@@ -138,14 +138,14 @@ parse_email:
     la $a0, email_buffer # haystack
     move $a1, $s0 # len of haystack
     la $a2, header_end # needle
-    la $a3, header_end_length # len of needle
+    lw $a3, header_end_length # len of needle
     jal find_str
 
     move $s2, $v0 # position of header end
 
     ### Rueckgabewerte bereitstellen (0.5 Punkte)
     move     $v0, $s1        # $v0 =
-    move     $v1, $s2        # $v1 = 
+    move     $v1, $s2        # $v1 =
     ### Register wieder herstellen
     lw $ra, 0($sp)
     lw $s0, 4($sp)
@@ -164,7 +164,7 @@ parse_email:
 
 .data
 
-input_file: .asciiz "../email1"
+input_file: .asciiz "/home/prez/Code/MIPS-spamfilter/email1"
 email_buffer: .space 4096
 size: .word 0
 
