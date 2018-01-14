@@ -141,11 +141,11 @@ parse_email:
     la $a3, header_end_length # len of needle
     jal find_str
 
-    move $s2, $v0 # position of subject
+    move $s2, $v0 # position of header end
 
     ### Rueckgabewerte bereitstellen (0.5 Punkte)
-    
-
+    move     $v0, $s1        # $v0 =
+    move     $v1, $s2        # $v1 = 
     ### Register wieder herstellen
     lw $ra, 0($sp)
     lw $s0, 4($sp)
