@@ -92,7 +92,7 @@ spamfilter:
    
 ### Der Text der E-Mail liegt im Puffer email_buffer
  	
-	###	Badwords liegen im Puffer badwords_buffer
+	### Badwords liegen im Puffer badwords_buffer
 	# load start address of badwords_buffer
 	la $s3, badwords_buffer
 	
@@ -114,7 +114,7 @@ badwords_loop:
 		### lese ein Wort
 
 ########################################_GET_BADWORD_########################################
-#																							#
+#                                                                                           #
 
 	bge $s3, $s0, badwords_loop_end		# branch if end of string reached
 
@@ -122,10 +122,10 @@ badwords_loop:
 	move $a0, $s3		# a0 = current start of badwords_buffer = haystack
 	move $a1, $s4		# a1 = current badwords_size = len of haystack
 	la $a2, 36($sp)		# a2 = load literal ',' from stack = needle
-	li $a3, 1 			# a3 = length of literal ',' = len of needle
+	li $a3, 1 		# a3 = length of literal ',' = len of needle
 
 
-	li $v0, 0			# $v0 = 0 (for return in ifind_str value if not found)
+	li $v0, 0		# $v0 = 0 (for return in ifind_str value if not found)
 	jal ifind_str		# find ',' character 
 	
 	move $s5, $v0		# save relative ',' position
@@ -138,7 +138,7 @@ badwords_loop:
 	addi $s4, $s4, -1	# sub length of ',' character
 	sub $s4, $s4, $s5 	# sub length of string from buffersize
 
-#																							#
+#                                                                                           #
 #############################################################################################
 
 
@@ -147,17 +147,17 @@ badwords_loop:
         ### lese und konvertiere Gewicht
 
 ####################################_GET_CURRENT_SCORE_######################################
-#																							#
+#                                                                                           #
 	# ifind_str arguments
 	move $a0, $s3		# a0 = current start of badwords_buffer = haystack
 	move $a1, $s4		# a1 = current badwords_size = len of haystack
 	la $a2, 36($sp)		# a2 = load literal ',' from stack = needle
-	li $a3, 1 			# a3 = length of literal ',' = len of needle
+	li $a3, 1 		# a3 = length of literal ',' = len of needle
 
-	li $v0, 0			# $v0 = 0 (for return in ifind_str value if not found)
+	li $v0, 0		# $v0 = 0 (for return in ifind_str value if not found)
 	jal ifind_str		# find ',' character
 
-	li $t0, -1			# beq check value
+	li $t0, -1		# beq check value
 	bne $v0, $t0, score_else_A		# else if not equal
 	sub $v0, $s0, $s3	# if ifind_str retunrs -1 change $s5 to length of last string	
 
@@ -176,12 +176,12 @@ convert_loop:
 	
 	move $t7, $t2		# save spamscore length
 
-	li $t5, 1			# init multiplier
-	li $t6, 10			# init base 
+	li $t5, 1		# init multiplier
+	li $t6, 10		# init base 
 decimal_loop:
-	beq $t7, $zero, decimal_loop_end 
-	mult $t4, $t5		# multiply spamscore value 
-	mflo $t4			# get only least sign bits -> works under 32 bits result size
+	beq $t7, $zero, decimal_loop_end	# check if end of spamscore value 
+	mult $t4, $t5		# multiply spamscore valu 
+	mflo $t4		# get only least sign bits -> works under 32 bits result size
 	mult $t5, $t6		# increase multiplier
 	mflo $t5			
 	addi $t7, $t7, -1	# decimal loop: decrease spamscore (digit) length
@@ -189,7 +189,6 @@ decimal_loop:
 decimal_loop_end:
 
 	addi $t2, $t2, -1	# convert loop: decrease spamscore (digit) length
-	
 	add $s6, $s6, $t4	# increase current spamscore (not total)
 	addi $t1, $t1, 1	# next digit
 	j convert_loop
@@ -201,7 +200,7 @@ convert_loop_end:
 	addi $s4, $s4, -1	# sub length of ',' character
 	sub $s4, $s4, $s5 	# sub length of string from buffersize
 
-#																							#
+#                                                                                           #
 #############################################################################################
 
 
@@ -210,11 +209,11 @@ convert_loop_end:
         ### suche alle Vorkommen des Wortes im Text der E-Mail und addiere Gewicht
 
 ###################################_CHECK_EMAIL_#############################################
-#																							#
+#                                                                                           #
 
 
 		# init arguments for ifind_str																			
-		la $a0, email_buffer	# email_buffer = haystack
+		la $a0, email_buffer		# email_buffer = haystack
 		lw $a1, size			# size = haystack len
 		move $a2, $s1			# badword = needle
 		move $a3, $s2			# badword len = needle len
@@ -223,10 +222,10 @@ convert_loop_end:
 		move $s1, $a1			# save size
 
 email_loop:
-		li $v0, 0				# reset return register
+		li $v0, 0			# reset return register
 		jal ifind_str			# call ifind_str with email and badword as argument
 
-		li $t0, -1				# beq check value
+		li $t0, -1			# beq check value
 		beq $t0, $v0, email_loop_end	# if not found end loop
 
 		add $s7, $s7, $s6		# increase total spamscore
@@ -247,7 +246,7 @@ email_loop:
 
 email_loop_end:
 
-#																							#
+#                                                                                           #
 #############################################################################################	
 
 	# reset current spamscore
@@ -290,10 +289,7 @@ badwords_loop_end:
 
 email_buffer: .asciiz "Hochverehrte Empfaenger,\r\n\r\nbei dieser E-Mail handelt es sich nicht um Spam sondern ich moechte Ihnen\r\nvielmehr ein lukratives Angebot machen: Mein entfernter Onkel hat mir mehr Geld\r\nhinterlassen als in meine Geldboerse passt. Ich muss Ihnen also etwas abgeben.\r\nVorher muss ich nur noch einen Spezialumschlag kaufen. Senden Sie mir noch\r\nheute BTC 1,000 per Western-Union und ich verspreche hoch und heilig Ihnen\r\nalsbald den gerechten Teil des Vermoegens zu vermachen.\r\n\r\nHochachtungsvoll\r\nAchim Mueller\r\nSekretaer fuer Vermoegensangelegenheiten\r\n"
 
-#email_buffer: .asciiz "H Geld e Geldboerse s"
 size: .word 550
-#size: .word 21
-komma: .asciiz ","
 
 badwords_buffer: .asciiz "Spam,5,Geld,1,ROrg,0,lukrativ,3,Kohlrabi,10,Weihnachten,3,Onkel,7,Vermoegen,2,Brief,4,Lotto,3"
 badwords_size: .word 93
