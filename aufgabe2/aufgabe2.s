@@ -90,7 +90,7 @@ spamfilter:
 	sw $t0, 36($sp)
 
    
-### Der Text der E-Mail liegt im Puffer email_buffer
+	### Der Text der E-Mail liegt im Puffer email_buffer
  	
 	### Badwords liegen im Puffer badwords_buffer
 	# load start address of badwords_buffer
