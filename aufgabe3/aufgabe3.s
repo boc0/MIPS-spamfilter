@@ -137,8 +137,6 @@ print_email:
     jal      write_email
 
 
-
-
     ### gesicherte Register wieder herstellen
     lw $ra, 0($sp)
     lw $s0, 4($sp)
