@@ -252,8 +252,6 @@ email_loop_end:
 	# reset current spamscore
 	li $s6, 0
 	
-badwords_continue:
-	
 	j badwords_loop
 
 badwords_loop_end:
