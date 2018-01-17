@@ -90,7 +90,7 @@ spamfilter:
 	sw $t0, 36($sp)
 
    
-	### Der Text der E-Mail liegt im Puffer email_buffer
+	
  	
 	### Badwords liegen im Puffer badwords_buffer
 	# load start address of badwords_buffer
@@ -210,7 +210,7 @@ convert_loop_end:
 
 ###################################_CHECK_EMAIL_#############################################
 #                                                                                           #
-
+	### Der Text der E-Mail liegt im Puffer email_buffer
 
 		# init arguments for find_str																			
 		la $a0, email_buffer		# email_buffer = haystack
