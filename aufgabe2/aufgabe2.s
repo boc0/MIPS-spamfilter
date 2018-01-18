@@ -9,7 +9,7 @@
 # $a3: len of needle
 # $v0: relative position of needle, -1 if not found
 
-ifind_str:
+find_str:
     # save $ra on stack
     addi $sp, $sp, -4
     sw $ra, 0($sp)
@@ -90,7 +90,7 @@ spamfilter:
 	sw $t0, 36($sp)
 
    
-	### Der Text der E-Mail liegt im Puffer email_buffer
+	
  	
 	### Badwords liegen im Puffer badwords_buffer
 	# load start address of badwords_buffer
@@ -118,15 +118,15 @@ badwords_loop:
 
 	bge $s3, $s0, badwords_loop_end		# branch if end of string reached
 
-	# ifind_str arguments
+	# find_str arguments
 	move $a0, $s3		# a0 = current start of badwords_buffer = haystack
 	move $a1, $s4		# a1 = current badwords_size = len of haystack
 	la $a2, 36($sp)		# a2 = load literal ',' from stack = needle
 	li $a3, 1 		# a3 = length of literal ',' = len of needle
 
 
-	li $v0, 0		# $v0 = 0 (for return in ifind_str value if not found)
-	jal ifind_str		# find ',' character 
+	li $v0, 0		# $v0 = 0 (for return in find_str value if not found)
+	jal find_str		# find ',' character 
 	
 	move $s5, $v0		# save relative ',' position
 	move $s2, $s5		# save badword length
@@ -148,18 +148,18 @@ badwords_loop:
 
 ####################################_GET_CURRENT_SCORE_######################################
 #                                                                                           #
-	# ifind_str arguments
+	# find_str arguments
 	move $a0, $s3		# a0 = current start of badwords_buffer = haystack
 	move $a1, $s4		# a1 = current badwords_size = len of haystack
 	la $a2, 36($sp)		# a2 = load literal ',' from stack = needle
 	li $a3, 1 		# a3 = length of literal ',' = len of needle
 
-	li $v0, 0		# $v0 = 0 (for return in ifind_str value if not found)
-	jal ifind_str		# find ',' character
+	li $v0, 0		# $v0 = 0 (for return in find_str value if not found)
+	jal find_str		# find ',' character
 
 	li $t0, -1		# beq check value
 	bne $v0, $t0, score_else_A		# else if not equal
-	sub $v0, $s0, $s3	# if ifind_str retunrs -1 change $s5 to length of last string	
+	sub $v0, $s0, $s3	# if find_str retunrs -1 change $s5 to length of last string	
 
 score_else_A:
 	move $s5, $v0		# save relative ',' position
@@ -210,9 +210,9 @@ convert_loop_end:
 
 ###################################_CHECK_EMAIL_#############################################
 #                                                                                           #
+	### Der Text der E-Mail liegt im Puffer email_buffer
 
-
-		# init arguments for ifind_str																			
+		# init arguments for find_str																			
 		la $a0, email_buffer		# email_buffer = haystack
 		lw $a1, size			# size = haystack len
 		move $a2, $s1			# badword = needle
@@ -223,7 +223,7 @@ convert_loop_end:
 
 email_loop:
 		li $v0, 0			# reset return register
-		jal ifind_str			# call ifind_str with email and badword as argument
+		jal find_str			# call find_str with email and badword as argument
 
 		li $t0, -1			# beq check value
 		beq $t0, $v0, email_loop_end	# if not found end loop
@@ -251,8 +251,6 @@ email_loop_end:
 
 	# reset current spamscore
 	li $s6, 0
-	
-badwords_continue:
 	
 	j badwords_loop
 
