@@ -144,8 +144,15 @@ parse_email:
     move $s2, $v0 # position of header end
 
     ### Rueckgabewerte bereitstellen (0.5 Punkte)
-    move     $v0, $s1        # $v0 =
-    move     $v1, $s2        # $v1 =
+    # addiere Positionen mit laengen der jeweiligen Zeichenfolgen,
+    # damit die position NACH 'Subjekt:' bzw '\r\n\r\n'
+    # zurueckgegeben wird statt davor
+    lw       $t0, header_subject_length
+    lw       $t1, header_end_length
+
+    add      $v0, $s1, $t0
+    add      $v1, $s2, $t1
+    
     ### Register wieder herstellen
     lw $ra, 0($sp)
     lw $s0, 4($sp)
